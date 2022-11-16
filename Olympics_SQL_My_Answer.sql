@@ -19,7 +19,7 @@ ORDER BY Year
 
 # Which year saw the highest and lowest no of countries participating in olympics?
 
--- Méthode 1 Union ALL ;
+-- MÃ©thode 1 Union ALL ;
 (
 SELECT Year , COUNT(DISTINCT NOC) AS Nbre_Nation
 FROM athlete_events ae 
@@ -35,7 +35,7 @@ ORDER BY Nbre_Nation DESC LIMIT 1
 )
 
 
--- Méthode 2 Sous-requête ;
+-- MÃ©thode 2 Sous-requÃªte ;
 
 with t1 as( SELECT Year , COUNT(DISTINCT NOC) AS Nbre_Nation
 FROM athlete_events ae 
@@ -45,7 +45,7 @@ select * from t1
 where Nbre_Nation =(select min(Nbre_Nation) from t1) or 
 Nbre_Nation = (select max(Nbre_Nation) from t1) 
 
--- Méthode 2 avec IN  ;
+-- MÃ©thode 2 avec IN  ;
 with t1 as( SELECT Year , COUNT(DISTINCT NOC) AS Nbre_Nation
 FROM athlete_events ae 
 GROUP BY Year 
@@ -167,7 +167,7 @@ SELECT t1.Name
 , t1.ID
 , t1.Sport
 , t1.Age
-, t1.Year AS Année_Médaille
+, t1.Year AS AnnÃ©e_MÃ©daille
 
 FROM t1
 WHERE t1.Age = (SELECT MAX(t1.Age) FROM t1)
@@ -215,21 +215,21 @@ ON t1.Games = t2.Games
 
 # Fetch the top 5 athletes who have won the most gold medals.
 
-SELECT  Name,  COUNT(Medal) AS Nbre_Médaille
+SELECT  Name,  COUNT(Medal) AS Nbre_MÃ©daille
 FROM athlete_events ae
  WHERE Medal = 'Gold'
 -- WHERE Medal != 'NA'
 GROUP BY Name
-ORDER BY Nbre_Médaille DESC LIMIT 5
+ORDER BY Nbre_MÃ©daille DESC LIMIT 5
 
 # Fetch the top 5 athletes who have won the most medals (gold/silver/bronze).
 
-SELECT  Name,  COUNT(Medal) AS Nbre_Médaille
+SELECT  Name,  COUNT(Medal) AS Nbre_MÃ©daille
 FROM athlete_events ae
 -- WHERE Medal = 'Gold'
 WHERE Medal != 'NA'
 GROUP BY Name
-ORDER BY Nbre_Médaille DESC LIMIT 7
+ORDER BY Nbre_MÃ©daille DESC LIMIT 7
 
 # I don't want to discriminate the 2 others who won 13 medals !!! 
 
@@ -237,7 +237,7 @@ ORDER BY Nbre_Médaille DESC LIMIT 7
 
 SELECT  ae.NOC
 , nr.region AS Pays
-,  COUNT(ae.Medal) AS Nbre_Médaille
+,  COUNT(ae.Medal) AS Nbre_MÃ©daille
 FROM athlete_events ae
 
 LEFT JOIN noc_regions nr
@@ -246,7 +246,7 @@ ON nr.NOC = ae.NOC
 WHERE Medal != 'NA'
 
 GROUP BY NOC
-ORDER BY Nbre_Médaille DESC LIMIT 5
+ORDER BY Nbre_MÃ©daille DESC LIMIT 5
 
 
 # List down total gold, silver and broze medals won by each country.
@@ -254,7 +254,7 @@ ORDER BY Nbre_Médaille DESC LIMIT 5
 SELECT  ae.NOC
 , nr.region AS Pays
 , ae.Medal
-,  COUNT(ae.Medal) AS Nbre_Médaille
+,  COUNT(ae.Medal) AS Nbre_MÃ©daille
 FROM athlete_events ae
 
 LEFT JOIN noc_regions nr
@@ -271,7 +271,7 @@ SELECT  ae.NOC
 , nr.region AS Pays
 , ae.Games
 , ae.Medal
-,  COUNT(ae.Medal) AS Nbre_Médaille
+,  COUNT(ae.Medal) AS Nbre_MÃ©daille
 FROM athlete_events ae
 
 LEFT JOIN noc_regions nr
@@ -298,7 +298,7 @@ SELECT  ae.NOC
 , nr.region AS Pays
 , ae.Games
 , ae.Medal
-,  COUNT(ae.Medal) AS Nbre_Médaille
+,  COUNT(ae.Medal) AS Nbre_MÃ©daille
 FROM athlete_events ae
 
 LEFT JOIN noc_regions nr
@@ -313,8 +313,8 @@ SELECT
 a.Games
 ,a.Pays
 , a.Medal
-, a.Nbre_Médaille
-, RANK () OVER (PARTITION BY  a.Games, a.Medal ORDER BY Nbre_Médaille DESC) AS Classement_Médaille
+, a.Nbre_MÃ©daille
+, RANK () OVER (PARTITION BY  a.Games, a.Medal ORDER BY Nbre_MÃ©daille DESC) AS Classement_MÃ©daille
 
 FROM a
 
@@ -326,7 +326,7 @@ SELECT *
 
 FROM b
 
-WHERE b.Classement_Médaille = 1
+WHERE b.Classement_MÃ©daille = 1
 
 
 # Identify which country won the most gold, most silver, most bronze medals and the most medals in each olympic games.
@@ -343,7 +343,7 @@ SELECT  ae.NOC
 , nr.region AS Pays
 , ae.Games
 , ae.Medal
-,  COUNT(ae.Medal) AS Nbre_Médaille
+,  COUNT(ae.Medal) AS Nbre_MÃ©daille
 FROM athlete_events ae
 
 LEFT JOIN noc_regions nr
@@ -358,9 +358,9 @@ SELECT
 a.Games
 ,a.Pays
 , a.Medal
-, a.Nbre_Médaille
-, RANK () OVER (PARTITION BY  a.Games, a.Medal ORDER BY Nbre_Médaille DESC) AS Classement_Médaille
-,  RANK () OVER (PARTITION BY  a.Games ORDER BY Nbre_Médaille DESC) AS Classement_Médaille_Total
+, a.Nbre_MÃ©daille
+, RANK () OVER (PARTITION BY  a.Games, a.Medal ORDER BY Nbre_MÃ©daille DESC) AS Classement_MÃ©daille
+,  RANK () OVER (PARTITION BY  a.Games ORDER BY Nbre_MÃ©daille DESC) AS Classement_MÃ©daille_Total
 FROM a
 
 
@@ -372,11 +372,11 @@ SELECT *
 FROM b
 
 WHERE 
-b.Classement_Médaille = 1
+b.Classement_MÃ©daille = 1
  
 AND
 
-b.Classement_Médaille_Total = 1
+b.Classement_MÃ©daille_Total = 1
 
 
 
@@ -385,9 +385,9 @@ b.Classement_Médaille_Total = 1
 SELECT  ae.NOC
 , nr.region AS Pays
 
-, SUM(CASE WHEN ae.Medal = 'Gold' Then 1 else 0 END) AS Nbre_Médaille_Or
-, SUM(CASE WHEN ae.Medal = 'Argent' Then 1 else 0 END) AS Nbre_Médaille_Argent
-, SUM(CASE WHEN ae.Medal = 'Bronze' Then 1 else 0 END) AS Nbre_Médaille_Bronze
+, SUM(CASE WHEN ae.Medal = 'Gold' Then 1 else 0 END) AS Nbre_MÃ©daille_Or
+, SUM(CASE WHEN ae.Medal = 'Argent' Then 1 else 0 END) AS Nbre_MÃ©daille_Argent
+, SUM(CASE WHEN ae.Medal = 'Bronze' Then 1 else 0 END) AS Nbre_MÃ©daille_Bronze
 
 FROM athlete_events ae
 
@@ -396,19 +396,19 @@ ON nr.NOC = ae.NOC
 
 
 GROUP BY ae.NOC, Pays
-HAVING Nbre_Médaille_Or = 0 and (Nbre_Médaille_Argent > 0 OR Nbre_Médaille_Bronze > 0 )
+HAVING Nbre_MÃ©daille_Or = 0 and (Nbre_MÃ©daille_Argent > 0 OR Nbre_MÃ©daille_Bronze > 0 )
 ORDER BY Pays
 
 
 
-# Pour vérifier
+# Pour vÃ©rifier
 
 
 SELECT  ae.NOC
 , nr.region AS Pays
 , ae.Medal
 
-, COUNT(ae.Medal) As Nbre_Médaille
+, COUNT(ae.Medal) As Nbre_MÃ©daille
 
 FROM athlete_events ae
 
@@ -484,7 +484,7 @@ WHERE ae.Medal = 'Gold'
 
 , ae.Year
 , ae.Sport
-, SUM(CASE WHEN ae.Medal != 'NA' Then 1 else 0 END) AS Nbre_Médaille_Total_Cette_année
+, SUM(CASE WHEN ae.Medal != 'NA' Then 1 else 0 END) AS Nbre_MÃ©daille_Total_Cette_annÃ©e
 
 
 
