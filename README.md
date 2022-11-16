@@ -15,4 +15,4 @@
 # https://techtfq.com/blog/practice-writing-sql-queries-using-real-dataset
 
 
-# That I answer by myself
+# That I answer by myself 
